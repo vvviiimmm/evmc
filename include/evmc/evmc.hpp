@@ -563,6 +563,11 @@ public:
         return result{host->call(context, &message)};
     }
 
+    void helper(evmc_tx_context& __restrict__ tx) const noexcept
+    {
+        tx = host->get_tx_context(context);
+    }
+
     /// @copydoc HostInterface::get_tx_context()
     ///
     /// The implementation caches the received transaction context
@@ -572,7 +577,7 @@ public:
     evmc_tx_context get_tx_context() const noexcept final
     {
         if (tx_context.block_timestamp == 0)
-            tx_context = host->get_tx_context(context);
+            helper(tx_context);
         return tx_context;
     }
 
