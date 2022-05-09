@@ -28,9 +28,6 @@ pub fn load_and_configure(
 
 #[cfg(test)]
 mod tests {
-    use std::ffi::CString;
-    use std::os::raw::c_char;
-
     use super::*;
 
     #[test]

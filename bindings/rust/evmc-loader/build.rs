@@ -27,6 +27,7 @@ fn main() {
         .rustified_enum("*")
         .allowlist_type("evmc_.*")
         .allowlist_function("evmc_.*")
+        .blocklist_type("evmc_vm")
         // TODO: consider removing this
         .size_t_is_usize(true)
         .generate()
