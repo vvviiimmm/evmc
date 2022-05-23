@@ -73,3 +73,33 @@ TEST(hex, validate_hex)
     EXPECT_FALSE(validate_hex("0"));
     EXPECT_FALSE(validate_hex("WXYZ"));
 }
+
+TEST(hex, from_hex_to_custom_type)
+{
+    struct X
+    {
+        uint8_t bytes[4];
+    };
+    constexpr auto test = [](std::string_view in) {
+        return evmc::hex({evmc::from_hex<X>(in).value().bytes, sizeof(X)});
+    };
+
+    static_assert(evmc::from_hex<X>("01").value().bytes[3] == 0x01);  // Works in constexpr.
+
+    EXPECT_EQ(test("01020304"), "01020304");
+    EXPECT_EQ(test("010203"), "00010203");
+    EXPECT_EQ(test("0102"), "00000102");
+    EXPECT_EQ(test("01"), "00000001");
+    EXPECT_EQ(test(""), "00000000");
+
+    EXPECT_EQ(test("0x01020304"), "01020304");
+    EXPECT_EQ(test("0x010203"), "00010203");
+    EXPECT_EQ(test("0x0102"), "00000102");
+    EXPECT_EQ(test("0x01"), "00000001");
+    EXPECT_EQ(test("0x"), "00000000");
+
+    EXPECT_FALSE(evmc::from_hex<X>("0"));
+    EXPECT_FALSE(evmc::from_hex<X>("0x "));
+    EXPECT_FALSE(evmc::from_hex<X>("0xf"));
+    EXPECT_FALSE(evmc::from_hex<X>("0x 00"));
+}
