@@ -65,13 +65,6 @@ TEST(hex, from_hex_0x_prefix)
     EXPECT_EQ(from_hex("0x001y"), std::nullopt);
 }
 
-TEST(hex, from_hex_skip_whitespace)
-{
-    EXPECT_EQ(from_hex("0x "), bytes{});
-    EXPECT_EQ(from_hex(" \n\t"), bytes{});
-    EXPECT_EQ(from_hex(" \n\tab\r"), bytes{0xab});
-}
-
 TEST(hex, validate_hex)
 {
     EXPECT_TRUE(validate_hex(""));
@@ -79,30 +72,4 @@ TEST(hex, validate_hex)
     EXPECT_TRUE(validate_hex("01"));
     EXPECT_FALSE(validate_hex("0"));
     EXPECT_FALSE(validate_hex("WXYZ"));
-}
-
-TEST(hex, isspace)
-{
-    // Test internal isspace() compliance with std::isspace().
-    // The https://en.cppreference.com/w/cpp/string/byte/isspace has the list of "space" characters.
-
-    for (int i = int{std::numeric_limits<char>::min()}; i <= std::numeric_limits<char>::max(); ++i)
-    {
-        const auto c = static_cast<char>(i);
-        EXPECT_EQ(evmc::internal_hex::isspace(c), (std::isspace(c) != 0));
-        switch (c)
-        {
-        case ' ':
-        case '\f':
-        case '\n':
-        case '\r':
-        case '\t':
-        case '\v':
-            EXPECT_TRUE(evmc::internal_hex::isspace(c));
-            break;
-        default:
-            EXPECT_FALSE(evmc::internal_hex::isspace(c));
-            break;
-        }
-    }
 }
