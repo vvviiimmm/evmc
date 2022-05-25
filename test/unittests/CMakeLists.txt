@@ -23,6 +23,7 @@ add_executable(
     loader_mock.h
     loader_test.cpp
     mocked_host_test.cpp
+    skip_space_iterator_test.cpp
     tooling_test.cpp
     hex_test.cpp
 )
